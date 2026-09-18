@@ -1,26 +1,338 @@
 @import "tailwindcss";
 
+/* ------------------------------------------------------------------
+   NUR — brand tokens (locked, see §2 of the project documentation).
+   Defined once here. Never hand-type a hex value in a component.
+------------------------------------------------------------------- */
+@theme {
+  --color-ink: #0b0a12;
+  --color-surface: #15131f;
+  --color-gold: #c9a227;
+  --color-gold-light: #f5d98a;
+  --color-rose: #d98c7a;
+  --color-parchment: #f3ecdd;
+  --color-muted: #9c93a8;
+
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-body: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-arabic: var(--font-amiri), "Scheherazade New", "Traditional Arabic", serif;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: dark;
+  --gold-gradient: linear-gradient(
+    135deg,
+    var(--color-gold) 0%,
+    var(--color-gold-light) 50%,
+    var(--color-gold) 100%
+  );
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-ink);
+  color: var(--color-parchment);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-gold) 35%, transparent);
+  color: var(--color-parchment);
+}
+
+/* ------------------------------------------------------------------
+   Starfield
+------------------------------------------------------------------- */
+@keyframes nur-twinkle {
+  0%,
+  100% {
+    opacity: var(--star-min);
+    transform: scale(0.75);
+  }
+  50% {
+    opacity: var(--star-max);
+    transform: scale(1.2);
+  }
+}
+
+.nur-star {
+  position: absolute;
+  border-radius: 9999px;
+  background: var(--color-parchment);
+  animation: nur-twinkle var(--dur) ease-in-out infinite;
+  animation-delay: var(--delay);
+  will-change: opacity, transform;
+}
+
+@keyframes nur-sparkle {
+  0%,
+  100% {
+    opacity: 0.06;
+    transform: rotate(0deg) scale(0.6);
+  }
+  50% {
+    opacity: var(--star-max);
+    transform: rotate(45deg) scale(1);
+  }
+}
+
+.nur-sparkle {
+  position: absolute;
+  color: var(--color-gold-light);
+  animation: nur-sparkle var(--dur) ease-in-out infinite;
+  animation-delay: var(--delay);
+  will-change: opacity, transform;
+}
+
+/* ------------------------------------------------------------------
+   Fanous — the lantern. Each element carries its own timing so the
+   whole thing reads as organic rather than one uniform pulse.
+------------------------------------------------------------------- */
+
+/* Slow sway, as if hanging from its chain. Pivots at the hook. */
+@keyframes nur-sway {
+  0%,
+  100% {
+    transform: rotate(-1.4deg);
+  }
+  50% {
+    transform: rotate(1.4deg);
+  }
+}
+
+.nur-sway {
+  transform-box: view-box;
+  transform-origin: 120px 8px;
+  animation: nur-sway 7.5s ease-in-out infinite;
+}
+
+/* Three flames, three different rhythms — deliberately not in sync. */
+@keyframes nur-flame-a {
+  0%,
+  100% {
+    transform: scale(1, 1) translateY(0);
+    opacity: 0.95;
+  }
+  23% {
+    transform: scale(0.94, 1.13) translateY(-1.5px);
+    opacity: 1;
+  }
+  48% {
+    transform: scale(1.07, 0.92) translateY(0.6px);
+    opacity: 0.82;
+  }
+  71% {
+    transform: scale(0.97, 1.07) translateY(-0.9px);
+    opacity: 1;
+  }
+}
+
+@keyframes nur-flame-b {
+  0%,
+  100% {
+    transform: scale(1, 1) translateY(0);
+    opacity: 0.9;
+  }
+  31% {
+    transform: scale(1.06, 0.9) translateY(0.8px);
+    opacity: 0.75;
+  }
+  58% {
+    transform: scale(0.92, 1.16) translateY(-2px);
+    opacity: 1;
+  }
+  82% {
+    transform: scale(1.02, 0.97) translateY(0.3px);
+    opacity: 0.88;
+  }
+}
+
+@keyframes nur-flame-c {
+  0%,
+  100% {
+    transform: scale(1, 1) translateY(0);
+    opacity: 1;
+  }
+  40% {
+    transform: scale(0.9, 1.2) translateY(-1.2px);
+    opacity: 0.9;
+  }
+  67% {
+    transform: scale(1.1, 0.88) translateY(0.5px);
+    opacity: 1;
+  }
+}
+
+.nur-flame-a,
+.nur-flame-b,
+.nur-flame-c {
+  transform-box: fill-box;
+  transform-origin: bottom center;
+  will-change: transform, opacity;
+}
+
+.nur-flame-a {
+  animation: nur-flame-a 1.7s ease-in-out infinite;
+}
+.nur-flame-b {
+  animation: nur-flame-b 1.15s ease-in-out infinite;
+  animation-delay: -0.4s;
+}
+.nur-flame-c {
+  animation: nur-flame-c 0.85s ease-in-out infinite;
+  animation-delay: -0.7s;
+}
+
+/* Light rays turning slowly behind the filigree, so the lattice
+   chops them into moving shafts. */
+@keyframes nur-rays-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes nur-rays-breathe {
+  0%,
+  100% {
+    opacity: 0.22;
+  }
+  50% {
+    opacity: 0.46;
+  }
+}
+
+.nur-rays {
+  transform-box: view-box;
+  transform-origin: 120px 186px;
+  animation: nur-rays-spin 44s linear infinite;
+}
+
+.nur-rays-inner {
+  animation: nur-rays-breathe 4.3s ease-in-out infinite;
+}
+
+/* Embers drifting up out of the crown and fading. */
+@keyframes nur-ember {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.5);
+  }
+  12% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--drift), -96px) scale(0.15);
+  }
+}
+
+.nur-ember {
+  transform-box: fill-box;
+  animation: nur-ember var(--dur) ease-out infinite;
+  animation-delay: var(--delay);
+  will-change: transform, opacity;
+}
+
+/* The warm halo the lantern throws into the surrounding dark. */
+@keyframes nur-halo {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.62;
+    transform: scale(1.05);
+  }
+}
+
+.nur-halo {
+  transform-box: view-box;
+  transform-origin: 120px 186px;
+  animation: nur-halo 5.6s ease-in-out infinite;
+}
+
+@keyframes nur-ground-glow {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+.nur-ground-glow {
+  animation: nur-ground-glow 5.6s ease-in-out infinite;
+}
+
+/* ------------------------------------------------------------------
+   Controls
+------------------------------------------------------------------- */
+.nur-btn-primary {
+  background: var(--gold-gradient);
+  color: var(--color-ink);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-gold) 60%, transparent);
+  transition: box-shadow 0.35s ease, transform 0.25s ease;
+}
+
+.nur-btn-primary:hover {
+  box-shadow: 0 0 28px -4px color-mix(in srgb, var(--color-gold) 70%, transparent);
+  transform: translateY(-1px);
+}
+
+.nur-btn-secondary {
+  border: 1px solid color-mix(in srgb, var(--color-gold) 55%, transparent);
+  color: var(--color-gold-light);
+  transition: border-color 0.35s ease, background-color 0.35s ease,
+    transform 0.25s ease;
+}
+
+.nur-btn-secondary:hover {
+  border-color: var(--color-gold);
+  background-color: color-mix(in srgb, var(--color-gold) 10%, transparent);
+  transform: translateY(-1px);
+}
+
+:where(a, button):focus-visible {
+  outline: 2px solid var(--color-gold-light);
+  outline-offset: 3px;
+}
+
+/* ------------------------------------------------------------------
+   Respect the user's motion preference — the app should still be
+   beautiful when everything holds still.
+------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .nur-star,
+  .nur-sparkle,
+  .nur-sway,
+  .nur-flame-a,
+  .nur-flame-b,
+  .nur-flame-c,
+  .nur-rays,
+  .nur-rays-inner,
+  .nur-ember,
+  .nur-halo,
+  .nur-ground-glow {
+    animation: none !important;
+  }
+
+  .nur-star,
+  .nur-sparkle {
+    opacity: var(--star-max);
+  }
+
+  .nur-ember {
+    opacity: 0;
+  }
 }
