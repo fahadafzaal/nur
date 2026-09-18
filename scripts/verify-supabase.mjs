@@ -93,6 +93,21 @@ try {
 const code = body?.code ?? "";
 const message = body?.message ?? "";
 
+// Checked BEFORE the 401 branch: Supabase returns 401 (not 403) for a
+// permission-denied table, and that denial is the success case here — it
+// is the column GRANTs doing their job.
+const deniedByGrants =
+  code === "42501" || /permission denied/i.test(message) || res.status === 403;
+
+if (deniedByGrants) {
+  console.log(`${OK} Project reachable and key accepted`);
+  console.log(`${OK} profiles table exists`);
+  console.log(`${OK} Column grants in force — anonymous access correctly denied`);
+  console.log("");
+  console.log("Supabase is set up correctly. Next: npm run dev");
+  process.exit(0);
+}
+
 if (res.status === 401) {
   console.log(`${BAD} The key was rejected: ${message}`);
   console.log("    Re-copy the publishable key from Project Settings -> API Keys.");
@@ -107,13 +122,6 @@ if (code === "PGRST205" || code === "42P01") {
   console.log("    Supabase Dashboard -> SQL Editor -> New query");
   console.log("    Paste all of supabase/migrations/0001_profiles.sql, press Run.");
   process.exit(1);
-}
-
-if (code === "42501" || res.status === 403) {
-  console.log(`${OK} profiles table exists`);
-  console.log(`${OK} Column grants in force — anonymous access correctly denied`);
-  console.log("\n\x1b[32mSupabase is set up correctly.\x1b[0m  Next: npm run dev");
-  process.exit(0);
 }
 
 if (res.ok) {
