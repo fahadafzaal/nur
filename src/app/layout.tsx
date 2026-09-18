@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Manrope, Amiri } from "next/font/google";
 import Starfield from "@/components/Starfield";
+import AmbientAudio from "@/components/AmbientAudio";
 import "./globals.css";
 
 /** Warm serif — headings and display copy. */
@@ -52,6 +53,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="bg-ink text-parchment relative min-h-full">
         <Starfield />
         {children}
+        <AmbientAudio />
       </body>
     </html>
   );
