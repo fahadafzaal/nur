@@ -1,32 +1,34 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { signOut } from "@/lib/auth/actions";
+import { reminderForDate } from "@/lib/reminders";
 
 export const metadata = { title: "Home — NUR" };
 
-/** The six pillars, in the order agreed with the client. */
-const PILLARS = [
-  { name: "Nasheed", detail: "Members-only library", milestone: "M5" },
-  { name: "Qur'an Explorer", detail: "Mushaf, lessons, notes", milestone: "M4" },
-  { name: "Seerah", detail: "By character, not by date", milestone: "M6" },
-  { name: "Tasbeeh", detail: "Dhikr counter", milestone: "M3" },
-  { name: "Shop", detail: "Modest fashion", milestone: "M8" },
-  { name: "Health", detail: "Sleep, water, fasting", milestone: "M3" },
+/** The six pillars. `href` null means the section is not built yet. */
+const PILLARS: {
+  name: string;
+  detail: string;
+  href: string | null;
+  note?: string;
+}[] = [
+  { name: "Qur'an Explorer", detail: "Mushaf, lessons, notes", href: null, note: "next" },
+  { name: "Nasheed", detail: "Members-only library", href: null, note: "awaiting audio" },
+  { name: "Seerah", detail: "By character, not by date", href: null, note: "awaiting content" },
+  { name: "Tasbeeh", detail: "Dhikr counter", href: "/tasbeeh" },
+  { name: "Health", detail: "Sleep, water, fasting", href: "/health" },
+  { name: "Shop", detail: "Modest fashion", href: null },
 ];
 
 export default async function HomePage() {
-  // Before Supabase is configured the proxy passes everything through, so
-  // this route is reachable. Bounce rather than crash on an empty client.
   if (!isSupabaseConfigured) redirect("/sign-in");
 
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
-  // The middleware already guards this route; this is defence in depth in
-  // case the matcher ever changes.
   if (!user) redirect("/sign-in?next=/home");
 
   const { data: profile } = await supabase
@@ -36,20 +38,19 @@ export default async function HomePage() {
     .maybeSingle();
 
   const name = profile?.display_name?.trim();
-  const status = profile?.membership_status ?? "free";
+  const reminder = reminderForDate();
 
   return (
-    <main className="relative mx-auto flex min-h-dvh w-full max-w-2xl flex-col px-6 py-14">
+    <main className="mx-auto w-full max-w-lg px-6 pt-12 pb-28">
       <header className="flex items-start justify-between gap-4">
         <div>
           <p className="font-body text-muted text-xs tracking-[0.2em] uppercase">
             Assalamu alaikum
           </p>
           <h1 className="font-display text-gold-light mt-2 text-3xl">
-            {name ? name : "Welcome"}
+            {name ?? "Welcome"}
           </h1>
         </div>
-
         <form action={signOut}>
           <button
             type="submit"
@@ -60,29 +61,68 @@ export default async function HomePage() {
         </form>
       </header>
 
-      <p className="font-body text-muted mt-6 text-sm leading-relaxed">
-        Your account is active
-        {status === "member" ? " with full membership." : " on a free account."}{" "}
-        The daily reminder, tasbeeh and health tracker arrive next.
-      </p>
+      {/* Today's reminder — the daily ritual the whole app is built around */}
+      <section className="border-gold/20 from-surface/70 to-surface/30 relative mt-9 overflow-hidden rounded-3xl border bg-gradient-to-b p-6">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-16 -right-10 h-40 w-40 rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(201,162,39,0.18) 0%, transparent 70%)",
+          }}
+        />
+        <p className="font-body text-gold/70 text-[10px] tracking-[0.22em] uppercase">
+          Today's reminder
+        </p>
+        <blockquote className="font-display text-parchment mt-4 text-lg leading-relaxed">
+          {reminder.text}
+        </blockquote>
+        <p className="font-body text-muted mt-5 text-[11px] tracking-wide">
+          on {reminder.theme}
+        </p>
+      </section>
 
-      <section className="mt-10 grid grid-cols-2 gap-3">
-        {PILLARS.map((pillar) => (
-          <div
-            key={pillar.name}
-            className="border-gold/15 bg-surface/50 rounded-2xl border p-4"
-          >
-            <p className="font-display text-parchment text-base">
-              {pillar.name}
-            </p>
-            <p className="font-body text-muted mt-1 text-xs leading-relaxed">
-              {pillar.detail}
-            </p>
-            <p className="font-body text-gold/60 mt-3 text-[10px] tracking-[0.18em] uppercase">
-              {pillar.milestone}
-            </p>
-          </div>
-        ))}
+      <section className="mt-9">
+        <h2 className="font-body text-muted text-xs tracking-[0.2em] uppercase">
+          Explore
+        </h2>
+        <div className="mt-4 grid grid-cols-2 gap-3">
+          {PILLARS.map((pillar) => {
+            const inner = (
+              <>
+                <p className="font-display text-parchment text-base">
+                  {pillar.name}
+                </p>
+                <p className="font-body text-muted mt-1 text-xs leading-relaxed">
+                  {pillar.detail}
+                </p>
+                {pillar.note ? (
+                  <p className="font-body text-muted/50 mt-3 text-[10px] tracking-[0.16em] uppercase">
+                    {pillar.note}
+                  </p>
+                ) : null}
+              </>
+            );
+
+            return pillar.href ? (
+              <Link
+                key={pillar.name}
+                href={pillar.href}
+                className="border-gold/20 bg-surface/50 hover:border-gold/50 hover:bg-surface/70 rounded-2xl border p-4 transition"
+              >
+                {inner}
+              </Link>
+            ) : (
+              <div
+                key={pillar.name}
+                aria-disabled="true"
+                className="rounded-2xl border border-white/8 bg-white/[0.02] p-4 opacity-55"
+              >
+                {inner}
+              </div>
+            );
+          })}
+        </div>
       </section>
     </main>
   );
