@@ -1,12 +1,17 @@
-import GatePlaceholder from "@/components/GatePlaceholder";
+import AuthForm from "@/components/AuthForm";
 
 export const metadata = { title: "Sign In — NUR" };
 
-export default function SignInPage() {
+export default async function SignInPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string }>;
+}) {
+  const { next } = await searchParams;
+
   return (
-    <GatePlaceholder
-      title="Already a Member"
-      body="Sign-in arrives in the next milestone, once accounts are wired to Supabase."
-    />
+    <main className="relative flex min-h-dvh items-center justify-center px-6 py-14">
+      <AuthForm mode="sign-in" next={next} />
+    </main>
   );
 }

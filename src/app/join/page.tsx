@@ -1,12 +1,11 @@
-import GatePlaceholder from "@/components/GatePlaceholder";
+import AuthForm from "@/components/AuthForm";
 
 export const metadata = { title: "Become a Member — NUR" };
 
 export default function JoinPage() {
   return (
-    <GatePlaceholder
-      title="Become a Member"
-      body="Sign-up arrives in the next milestone, together with the members-only nasheed library."
-    />
+    <main className="relative flex min-h-dvh items-center justify-center px-6 py-14">
+      <AuthForm mode="join" />
+    </main>
   );
 }
