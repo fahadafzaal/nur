@@ -19,7 +19,7 @@ const PILLARS: {
   { name: "Seerah", detail: "By character, not by date", href: "/seerah" },
   { name: "Tasbeeh", detail: "Dhikr counter", href: "/tasbeeh" },
   { name: "Health", detail: "Sleep, water, fasting", href: "/health" },
-  { name: "Shop", detail: "Modest fashion", href: null },
+  { name: "Shop", detail: "Modest fashion", href: "/shop" },
 ];
 
 export default async function HomePage() {
