@@ -4,6 +4,7 @@ import Starfield from "@/components/Starfield";
 import AmbientAudio from "@/components/AmbientAudio";
 import AppNav from "@/components/AppNav";
 import { NasheedPlayerProvider } from "@/components/player/NasheedPlayer";
+import ServiceWorker from "@/components/ServiceWorker";
 import "./globals.css";
 
 /** Warm serif — headings and display copy. */
@@ -59,6 +60,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <AppNav />
         </NasheedPlayerProvider>
         <AmbientAudio />
+        <ServiceWorker />
       </body>
     </html>
   );

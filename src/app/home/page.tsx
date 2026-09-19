@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { signOut } from "@/lib/auth/actions";
 import { reminderForDate } from "@/lib/reminders";
+import InstallApp from "@/components/InstallApp";
 
 export const metadata = { title: "Home — NUR" };
 
@@ -70,6 +71,8 @@ export default async function HomePage() {
           </form>
         </div>
       </header>
+
+      <InstallApp />
 
       {/* Today's reminder — the daily ritual the whole app is built around */}
       <section className="border-gold/20 from-surface/70 to-surface/30 relative mt-9 overflow-hidden rounded-3xl border bg-gradient-to-b p-6">

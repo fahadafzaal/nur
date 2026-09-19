@@ -82,6 +82,6 @@ export const config = {
      * Everything except static assets and image files — running auth on
      * those would be pure latency.
      */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|avif|mp3|woff2?)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|icon|apple-icon|icons/|manifest.webmanifest|sw\.js|\.well-known/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|avif|mp3|woff2?)$).*)",
   ],
 };

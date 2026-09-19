@@ -38,7 +38,7 @@ const ITEMS = [
 ];
 
 /** The splash and the auth screens are deliberately chrome-free. */
-const HIDDEN_ON = ["/", "/join", "/sign-in"];
+const HIDDEN_ON = ["/", "/join", "/sign-in", "/offline"];
 
 export default function AppNav() {
   const pathname = usePathname();
