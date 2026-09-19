@@ -35,6 +35,11 @@ into the Supabase SQL Editor, in order. All are safe to re-run.
 |---|---|
 | `0001_profiles.sql` | accounts, profiles, RLS, column grants |
 | `0002_tracking.sql` | tasbeeh sessions, health logs |
+| `0003_hardening.sql` | fixes from the Supabase security advisor |
+| `0004_quran.sql` | Daily Lessons, private Qur'an notes, is_admin/is_member |
+| `0005_nasheeds.sql` | nasheeds, storage buckets, reminder articles, app settings |
+| `0006_seerah.sql` | Seerah episodes, private reflections |
+| `0007_shop_admin.sql` | products, orders, admin functions |
 
 > **Why the column grants matter.** RLS is row-level, so a policy allowing
 > "update your own row" would still let a member set their own
@@ -60,23 +65,38 @@ Fraunces (headings) · Manrope (UI) · Amiri (Arabic)
 
 ## Status
 
-| Milestone | State |
+All nine milestones are built and live. What remains is content and keys.
+
+| Section | Built | Waiting on |
+|---|---|---|
+| Splash, accounts, reminders, tasbeeh, health | yes | — |
+| Qur'an Explorer (114 surahs, recitation, notes) | yes | lessons, added in /admin |
+| Nasheed library + ambient audio | yes | audio files, uploaded in /admin |
+| Seerah by character | yes | scripts and narration, in /admin |
+| Admin panel | yes | — |
+| Membership + shop | yes | Stripe keys (below) |
+| Installable Android/iPhone app | yes | Play Store listing (optional) |
+
+## Environment variables (Vercel)
+
+| Name | Needed for |
 |---|---|
-| M1 — design system, Fanous splash | done |
-| M2 — accounts, sessions, route protection | done |
-| M3 — daily reminder, tasbeeh, health | done |
-| M4 — Qur'an Explorer | next, unblocked |
-| M5 — nasheed library, ambient audio | awaiting audio files |
-| M6 — Seerah | awaiting content |
-| M7 — admin panel | — |
-| M8 — Stripe membership, shop | — |
-| M9 — QA, PWA, launch | — |
+| `NEXT_PUBLIC_SUPABASE_URL` | everything |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | everything |
+| `SUPABASE_SECRET_KEY` | payments — server only, never `NEXT_PUBLIC_` |
+| `STRIPE_SECRET_KEY` | payments |
+| `STRIPE_MEMBERSHIP_PRICE_ID` | membership |
+| `STRIPE_WEBHOOK_SECRET` | payments — endpoint `/api/stripe/webhook` |
+| `ANDROID_PACKAGE_NAME`, `ANDROID_SHA256` | Google Play release only |
+
+Without the payment keys, membership and checkout show "opens soon";
+nothing else is affected. `/admin` shows which keys are set.
 
 ## Audio
 
-Drop the full **Lost and Found** track at `public/audio/ambient.mp3`. The
-player loops 1:08–1:53 out of it, so it does not need trimming. Until the
-file exists the ambient control hides itself.
+Upload the full **Lost and Found** track in **/admin → Settings** and set the
+loop window (1:08–1:53). No trimming needed, no deploy needed. Until a track
+is set the ambient control hides itself.
 
 Members-only tracks must **not** live in `public/` — they go in a private
 Supabase Storage bucket behind signed URLs (M5), or the membership has
