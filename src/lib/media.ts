@@ -30,4 +30,6 @@ export type Track = {
   memberOnly: boolean;
   hasAudio: boolean;
   themes: string[];
+  /** Where the full audio streams from. Defaults to the nasheed route. */
+  streamUrl?: string;
 };

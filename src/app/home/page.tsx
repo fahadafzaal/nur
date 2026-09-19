@@ -16,7 +16,7 @@ const PILLARS: {
 }[] = [
   { name: "Qur'an Explorer", detail: "114 surahs, recitation, notes", href: "/quran" },
   { name: "Nasheed", detail: "Members-only library", href: "/nasheeds" },
-  { name: "Seerah", detail: "By character, not by date", href: null, note: "awaiting content" },
+  { name: "Seerah", detail: "By character, not by date", href: "/seerah" },
   { name: "Tasbeeh", detail: "Dhikr counter", href: "/tasbeeh" },
   { name: "Health", detail: "Sleep, water, fasting", href: "/health" },
   { name: "Shop", detail: "Modest fashion", href: null },

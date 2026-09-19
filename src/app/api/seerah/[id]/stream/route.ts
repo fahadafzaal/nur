@@ -1,11 +1,11 @@
 import type { NextRequest } from "next/server";
 import { streamPrivateAudio } from "@/lib/stream";
 
-/** GET /api/nasheeds/:id/stream — see src/lib/stream.ts. */
+/** GET /api/seerah/:id/stream — Seerah narration. See src/lib/stream.ts. */
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-  return streamPrivateAudio("nasheeds", id);
+  return streamPrivateAudio("seerah_episodes", id);
 }

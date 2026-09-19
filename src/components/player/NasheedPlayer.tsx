@@ -81,7 +81,7 @@ export function NasheedPlayerProvider({ children }: { children: ReactNode }) {
       if (next.hasAudio && (!next.memberOnly || isMember)) {
         setTrack(next);
         setMode("full");
-        start(`/api/nasheeds/${next.id}/stream`);
+        start(next.streamUrl ?? `/api/nasheeds/${next.id}/stream`);
         return "full";
       }
       if (next.preview) {
