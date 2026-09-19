@@ -2,7 +2,12 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ayahAudioUrl } from "@/lib/quran-audio";
-import { claimAudioFocus, releaseAudioFocus } from "@/lib/audio/focus";
+import {
+  claimAudioFocus,
+  onAudioFocus,
+  releaseAudioFocus,
+} from "@/lib/audio/focus";
+import { usePlayerBarHeight } from "@/lib/audio/player-bar";
 import VerseMarker from "./VerseMarker";
 import SurahLesson from "./SurahLesson";
 import SurahNotes from "./SurahNotes";
@@ -151,6 +156,20 @@ export default function SurahReader({ number, name, bismillah, verses }: Props) 
       stop();
     }
   }, [continuous, current, playAt, stop, verses.length]);
+
+  // A nasheed started elsewhere: stop reciting rather than play over it.
+  useEffect(
+    () =>
+      onAudioFocus({
+        claimed: (owner) => {
+          if (owner !== FOCUS_OWNER && current !== null) stop();
+        },
+        released: () => {},
+      }),
+    [current, stop],
+  );
+
+  usePlayerBarHeight(current !== null);
 
   // Release focus if the reader leaves mid-recitation.
   useEffect(() => () => releaseAudioFocus(FOCUS_OWNER), []);

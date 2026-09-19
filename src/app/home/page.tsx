@@ -15,7 +15,7 @@ const PILLARS: {
   note?: string;
 }[] = [
   { name: "Qur'an Explorer", detail: "114 surahs, recitation, notes", href: "/quran" },
-  { name: "Nasheed", detail: "Members-only library", href: null, note: "awaiting audio" },
+  { name: "Nasheed", detail: "Members-only library", href: "/nasheeds" },
   { name: "Seerah", detail: "By character, not by date", href: null, note: "awaiting content" },
   { name: "Tasbeeh", detail: "Dhikr counter", href: "/tasbeeh" },
   { name: "Health", detail: "Sleep, water, fasting", href: "/health" },
@@ -72,14 +72,22 @@ export default async function HomePage() {
           }}
         />
         <p className="font-body text-gold/70 text-[10px] tracking-[0.22em] uppercase">
-          Today's reminder
+          Today&apos;s reminder
         </p>
         <blockquote className="font-display text-parchment mt-4 text-lg leading-relaxed">
           {reminder.text}
         </blockquote>
-        <p className="font-body text-muted mt-5 text-[11px] tracking-wide">
-          on {reminder.theme}
-        </p>
+        <div className="mt-5 flex items-center justify-between gap-3">
+          <p className="font-body text-muted text-[11px] tracking-wide capitalize">
+            on {reminder.theme}
+          </p>
+          <Link
+            href={`/reminders/${reminder.id}`}
+            className="font-body text-gold-light text-xs underline-offset-4 hover:underline"
+          >
+            Reflect &amp; listen →
+          </Link>
+        </div>
       </section>
 
       <section className="mt-9">

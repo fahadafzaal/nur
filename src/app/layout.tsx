@@ -3,6 +3,7 @@ import { Fraunces, Manrope, Amiri } from "next/font/google";
 import Starfield from "@/components/Starfield";
 import AmbientAudio from "@/components/AmbientAudio";
 import AppNav from "@/components/AppNav";
+import { NasheedPlayerProvider } from "@/components/player/NasheedPlayer";
 import "./globals.css";
 
 /** Warm serif — headings and display copy. */
@@ -53,8 +54,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="bg-ink text-parchment relative min-h-full">
         <Starfield />
-        {children}
-        <AppNav />
+        <NasheedPlayerProvider>
+          {children}
+          <AppNav />
+        </NasheedPlayerProvider>
         <AmbientAudio />
       </body>
     </html>

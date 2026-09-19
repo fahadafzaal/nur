@@ -13,6 +13,8 @@ import {
  */
 const PROTECTED_PREFIXES = [
   "/home",
+  "/reminders",
+  "/membership",
   "/quran",
   "/nasheeds",
   "/seerah",
