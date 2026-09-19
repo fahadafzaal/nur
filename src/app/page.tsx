@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import Fanous from "@/components/Fanous";
 
@@ -13,6 +15,20 @@ const reveal = {
 const ease: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 export default function SplashPage() {
+  const router = useRouter();
+
+  // A failed email link (already used, expired) arrives here from Supabase
+  // with the reason in the query string and the hash. Without this the
+  // visitor sees the splash screen and no hint that anything went wrong.
+  useEffect(() => {
+    const query = new URLSearchParams(window.location.search);
+    const hash = new URLSearchParams(window.location.hash.slice(1));
+    const code =
+      query.get("error_code") ?? hash.get("error_code") ??
+      query.get("error") ?? hash.get("error");
+    if (code) router.replace(`/sign-in?error=${encodeURIComponent(code)}`);
+  }, [router]);
+
   return (
     <main className="relative flex min-h-dvh flex-col items-center justify-center px-6 py-14">
       <motion.div

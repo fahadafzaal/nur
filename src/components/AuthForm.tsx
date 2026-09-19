@@ -13,14 +13,17 @@ const LABEL = "font-body text-muted mb-1.5 block text-xs tracking-wide";
 export default function AuthForm({
   mode,
   next,
+  initialError,
 }: {
   mode: "join" | "sign-in";
   next?: string;
+  /** Shown until the first submit — e.g. an expired email link. */
+  initialError?: string;
 }) {
   const isJoin = mode === "join";
   const [state, formAction, pending] = useActionState<AuthState, FormData>(
     isJoin ? signUp : signIn,
-    {},
+    initialError ? { error: initialError } : {},
   );
 
   return (
