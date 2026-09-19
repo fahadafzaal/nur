@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AMBIENT_STORAGE_KEY, AMBIENT_TRACK } from "@/lib/audio/ambient";
+import { onAudioFocus } from "@/lib/audio/focus";
 
 /**
  * The app-wide ambient nasheed.
@@ -93,6 +94,25 @@ export default function AmbientAudio() {
       document.removeEventListener("keydown", onFirst);
     };
   }, [available, begin]);
+
+  // Step aside for recitation or a library nasheed, and come back after —
+  // but only if the ambient loop was actually playing when it was asked to.
+  const pausedForRef = useRef<Set<string>>(new Set());
+  useEffect(() => {
+    return onAudioFocus({
+      claimed: (owner) => {
+        const audio = audioRef.current;
+        if (!audio || audio.paused) return;
+        pausedForRef.current.add(owner);
+        audio.pause();
+      },
+      released: (owner) => {
+        const audio = audioRef.current;
+        if (!audio || !pausedForRef.current.delete(owner)) return;
+        if (pausedForRef.current.size === 0) void audio.play().catch(() => {});
+      },
+    });
+  }, []);
 
   // Keep playback inside the clip window.
   const onTimeUpdate = useCallback(() => {

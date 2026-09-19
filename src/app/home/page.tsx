@@ -14,7 +14,7 @@ const PILLARS: {
   href: string | null;
   note?: string;
 }[] = [
-  { name: "Qur'an Explorer", detail: "Mushaf, lessons, notes", href: null, note: "next" },
+  { name: "Qur'an Explorer", detail: "114 surahs, recitation, notes", href: "/quran" },
   { name: "Nasheed", detail: "Members-only library", href: null, note: "awaiting audio" },
   { name: "Seerah", detail: "By character, not by date", href: null, note: "awaiting content" },
   { name: "Tasbeeh", detail: "Dhikr counter", href: "/tasbeeh" },
