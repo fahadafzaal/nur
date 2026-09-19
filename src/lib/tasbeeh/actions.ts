@@ -3,20 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
-export type DhikrOption = {
-  id: string;
-  arabic: string;
-  translit: string;
-  meaning: string;
-};
-
-export const DHIKR: DhikrOption[] = [
-  { id: "subhanallah", arabic: "سُبْحَانَ ٱللَّٰه", translit: "SubhanAllah", meaning: "Glory be to Allah" },
-  { id: "alhamdulillah", arabic: "ٱلْحَمْدُ لِلَّٰه", translit: "Alhamdulillah", meaning: "All praise is for Allah" },
-  { id: "allahuakbar", arabic: "ٱللَّٰهُ أَكْبَر", translit: "Allahu Akbar", meaning: "Allah is the greatest" },
-  { id: "tahlil", arabic: "لَا إِلَٰهَ إِلَّا ٱللَّٰه", translit: "La ilaha illa Allah", meaning: "There is no god but Allah" },
-  { id: "istighfar", arabic: "أَسْتَغْفِرُ ٱللَّٰه", translit: "Astaghfirullah", meaning: "I seek forgiveness from Allah" },
-];
+// Only async functions belong in this file — see dhikr.ts for why.
 
 /** Records a finished round. Silent on failure — never lose a count to a network blip. */
 export async function saveTasbeehSession(

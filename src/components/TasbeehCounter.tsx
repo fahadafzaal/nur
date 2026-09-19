@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { DHIKR, saveTasbeehSession } from "@/lib/tasbeeh/actions";
+import { saveTasbeehSession } from "@/lib/tasbeeh/actions";
+import { DHIKR } from "@/lib/tasbeeh/dhikr";
 
 const TARGETS = [33, 99, 100] as const;
 
