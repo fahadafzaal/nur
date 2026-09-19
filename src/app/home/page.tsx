@@ -33,7 +33,7 @@ export default async function HomePage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("display_name, membership_status")
+    .select("display_name, membership_status, role")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -51,14 +51,24 @@ export default async function HomePage() {
             {name ?? "Welcome"}
           </h1>
         </div>
-        <form action={signOut}>
-          <button
-            type="submit"
-            className="font-body text-muted hover:text-parchment rounded-full border border-white/10 px-4 py-2 text-xs transition"
-          >
-            Sign out
-          </button>
-        </form>
+        <div className="flex items-center gap-2">
+          {profile?.role === "admin" ? (
+            <Link
+              href="/admin"
+              className="font-body border-gold/40 text-gold-light rounded-full border px-4 py-2 text-xs"
+            >
+              Admin
+            </Link>
+          ) : null}
+          <form action={signOut}>
+            <button
+              type="submit"
+              className="font-body text-muted hover:text-parchment rounded-full border border-white/10 px-4 py-2 text-xs transition"
+            >
+              Sign out
+            </button>
+          </form>
+        </div>
       </header>
 
       {/* Today's reminder — the daily ritual the whole app is built around */}
